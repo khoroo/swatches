@@ -3,132 +3,123 @@
 <head>
     <title>Colour Picker</title>
     <style>
-        body, html {
+        body {
             margin: 0;
-            padding: 20px;
             font-family: system-ui;
         }
-        h1 {
-            margin: 0 0 20px 0;
-            color: #333;
-        }
         .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .canvas-container {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
         .drop-zone {
-            width: 100%;
             border: 2px dashed #ccc;
             border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
-            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .drop-zone.drag-over {
             background: #f0f0f0;
             border-color: #666;
         }
         canvas {
-            max-width: 100%;
+            width: 100%;
             height: auto;
             display: block;
             cursor: crosshair;
+            margin-bottom: 20px;
         }
-        .colour-info {
-            padding: 20px;
-            border: 1px solid #ccc;
+        .preview-section {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
             border-radius: 8px;
-            min-width: 200px;
         }
-        .colour-preview {
-            width: 100px;
-            height: 100px;
+        .preview-color {
+            width: 60px;
+            height: 60px;
             border: 1px solid #ccc;
-            margin-bottom: 10px;
             border-radius: 4px;
         }
-        .selected-colours {
-            margin-top: 20px;
+        .preview-info {
+            font-size: 14px;
+            color: #333;
+        }
+        .colours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
         .colour-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
+        }
+        .colour-block {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 1px solid #eee;
             margin-bottom: 8px;
-            gap: 10px;
-        }
-        .colour-swatch {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .remove-btn {
-            padding: 4px 8px;
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            transition: transform 0.2s;
             cursor: pointer;
         }
-        .export-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #ccc;
+        .colour-block:hover {
+            transform: scale(1.05);
         }
-        .export-code {
+        .colour-hex {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .export-panel {
             background: #f5f5f5;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 15px;
+            border-radius: 8px;
             font-family: monospace;
-            margin: 10px 0;
-            word-break: break-all;
+            font-size: 14px;
             cursor: pointer;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
-    <h1>Colour Picker</h1>
     <div class="container">
-        <div class="canvas-container">
-            <div class="drop-zone" id="dropZone">
-                <input type="file" id="imageInput" accept="image/*">
-                <p>or drag and drop an image here</p>
-            </div>
-            <canvas id="canvas"></canvas>
+        <div class="drop-zone" id="dropZone">
+            <input type="file" id="imageInput" accept="image/*">
+            <p>Drop image here or click to upload</p>
         </div>
-        <div class="colour-info">
-            <div class="colour-preview" id="colourPreview"></div>
-            <div id="colourValue"></div>
-            <div id="position"></div>
-            <div class="selected-colours">
-                <h3>Selected Colours:</h3>
-                <div id="colourList"></div>
-                <div class="export-section">
-                    <h3>Export Colours:</h3>
-                    <div id="exportCode" class="export-code"></div>
-                </div>
+        <canvas id="canvas"></canvas>
+        <div class="preview-section">
+            <div class="preview-color" id="colourPreview"></div>
+            <div class="preview-info">
+                <div id="colourValue"></div>
+                <div id="position"></div>
             </div>
         </div>
+        <div class="colours-grid" id="colourGrid"></div>
+        <div class="export-panel" id="exportCode"></div>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const dropZone = document.getElementById('dropZone');
-        const colourPreview = document.getElementById('colourPreview');
-        const colourValue = document.getElementById('colourValue');
-        const position = document.getElementById('position');
-        const colourList = document.getElementById('colourList');
-        const exportCode = document.getElementById('exportCode');
+        const els = {
+            canvas: document.getElementById('canvas'),
+            dropZone: document.getElementById('dropZone'),
+            colourPreview: document.getElementById('colourPreview'),
+            colourValue: document.getElementById('colourValue'),
+            position: document.getElementById('position'),
+            colourGrid: document.getElementById('colourGrid'),
+            exportCode: document.getElementById('exportCode'),
+            imageInput: document.getElementById('imageInput')
+        };
         
+        const ctx = els.canvas.getContext('2d');
         let selectedColours = [];
 
         function rgbToHex(r, g, b) {
@@ -138,119 +129,86 @@
         function loadImage(file) {
             const img = new Image();
             img.src = URL.createObjectURL(file);
-            
             img.onload = function() {
-                canvas.width = img.width;
-                canvas.height = img.height;
+                els.canvas.width = img.width;
+                els.canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
-                dropZone.style.display = 'none';
-                canvas.style.display = 'block';
+                els.dropZone.style.display = 'none';
+                els.canvas.style.display = 'block';
             }
+        }
+
+        function updateUI() {
+            els.colourGrid.innerHTML = selectedColours.map((hex, i) => `
+                <div class="colour-item">
+                    <div class="colour-block" 
+                         style="background-color: ${hex}"
+                         onclick="removeColour(${i})">
+                    </div>
+                    <span class="colour-hex">${hex}</span>
+                </div>
+            `).join('');
+            els.exportCode.textContent = JSON.stringify(selectedColours);
         }
 
         function addColour(hex) {
             if (!selectedColours.includes(hex)) {
                 selectedColours.push(hex);
-                updateColourList();
-                updateExportCode();
+                updateUI();
             }
         }
 
         function removeColour(index) {
             selectedColours.splice(index, 1);
-            updateColourList();
-            updateExportCode();
+            updateUI();
         }
 
-        function updateColourList() {
-            colourList.innerHTML = '';
-            selectedColours.forEach((hex, index) => {
-                const colourItem = document.createElement('div');
-                colourItem.className = 'colour-item';
-                
-                const swatch = document.createElement('div');
-                swatch.className = 'colour-swatch';
-                swatch.style.backgroundColor = hex;
-                
-                const colourInfo = document.createElement('span');
-                colourInfo.textContent = hex;
-                
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove-btn';
-                removeBtn.textContent = 'Remove';
-                removeBtn.onclick = () => removeColour(index);
-                
-                colourItem.appendChild(swatch);
-                colourItem.appendChild(colourInfo);
-                colourItem.appendChild(removeBtn);
-                colourList.appendChild(colourItem);
-            });
-        }
+        els.exportCode.onclick = function() {
+            navigator.clipboard.writeText(this.textContent);
+            const originalText = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => this.textContent = originalText, 1000);
+        };
 
-        function updateExportCode() {
-            const exportString = JSON.stringify(selectedColours);
-            exportCode.textContent = exportString;
-        }
+        els.imageInput.onchange = e => e.target.files[0] && loadImage(e.target.files[0]);
 
-        exportCode.addEventListener('click', function() {
-            navigator.clipboard.writeText(exportCode.textContent);
-            const originalText = exportCode.textContent;
-            exportCode.textContent = 'Copied!';
-            setTimeout(() => {
-                exportCode.textContent = originalText;
-            }, 1000);
-        });
-
-        document.getElementById('imageInput').addEventListener('change', (e) => {
-            if (e.target.files[0]) loadImage(e.target.files[0]);
-        });
-
-        dropZone.addEventListener('dragover', (e) => {
+        els.dropZone.ondragover = e => {
             e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
+            els.dropZone.classList.add('drag-over');
+        };
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
+        els.dropZone.ondragleave = () => els.dropZone.classList.remove('drag-over');
 
-        dropZone.addEventListener('drop', (e) => {
+        els.dropZone.ondrop = e => {
             e.preventDefault();
-            dropZone.classList.remove('drag-over');
+            els.dropZone.classList.remove('drag-over');
             const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                loadImage(file);
-            }
-        });
+            file?.type.startsWith('image/') && loadImage(file);
+        };
 
-        canvas.addEventListener('mousemove', function(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            
+        els.canvas.onmousemove = e => {
+            const rect = els.canvas.getBoundingClientRect();
+            const scaleX = els.canvas.width / rect.width;
+            const scaleY = els.canvas.height / rect.height;
             const x = (e.clientX - rect.left) * scaleX;
             const y = (e.clientY - rect.top) * scaleY;
+            const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+            const hex = rgbToHex(r, g, b);
             
-            const pixel = ctx.getImageData(x, y, 1, 1).data;
-            const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
-            
-            colourPreview.style.backgroundColor = hex;
-            colourValue.innerHTML = `HEX: ${hex}`;
-            position.textContent = `Position: ${Math.round(x)}, ${Math.round(y)}`;
-        });
+            els.colourPreview.style.backgroundColor = hex;
+            els.colourValue.textContent = `HEX: ${hex}`;
+            els.position.textContent = `Position: ${Math.round(x)}, ${Math.round(y)}`;
+        };
 
-        canvas.addEventListener('click', function(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            
+        els.canvas.onclick = e => {
+            const rect = els.canvas.getBoundingClientRect();
+            const scaleX = els.canvas.width / rect.width;
+            const scaleY = els.canvas.height / rect.height;
             const x = (e.clientX - rect.left) * scaleX;
             const y = (e.clientY - rect.top) * scaleY;
-            
-            const pixel = ctx.getImageData(x, y, 1, 1).data;
-            const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
-            addColour(hex);
-        });
+            const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+            addColour(rgbToHex(r, g, b));
+        };
     </script>
 </body>
 </html>
