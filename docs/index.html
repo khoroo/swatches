@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+  font-family: system-ui, sans-serif;
+  padding: 2em;
+}
+.swatch-group {
+  margin: 2em 0;
+}
+.group-name {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+.swatch-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+.swatch {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: flex-end;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.swatch:hover {
+  transform: scale(1.05);
+}
+.hex {
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 4px;
+  font-family: monospace;
+  width: 100%;
+  text-align: center;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="swatch-group">
+  <div class="group-name">Fuzzy</div>
+  <div class="swatch-container">
+    <div class="swatch" style="background: #AF3424" onclick="copyToClipboard('#AF3424')">
+  <div class="hex">#AF3424</div>
+</div>
+
+<div class="swatch" style="background: #b3a83d" onclick="copyToClipboard('#b3a83d')">
+  <div class="hex">#b3a83d</div>
+</div>
+
+<div class="swatch" style="background: #b49539" onclick="copyToClipboard('#b49539')">
+  <div class="hex">#b49539</div>
+</div>
+
+  </div>
+</div>
+
+<div class="swatch-group">
+  <div class="group-name">Ocean</div>
+  <div class="swatch-container">
+    <div class="swatch" style="background: #0F4C81" onclick="copyToClipboard('#0F4C81')">
+  <div class="hex">#0F4C81</div>
+</div>
+
+<div class="swatch" style="background: #6FB7D6" onclick="copyToClipboard('#6FB7D6')">
+  <div class="hex">#6FB7D6</div>
+</div>
+
+<div class="swatch" style="background: #B2D9EA" onclick="copyToClipboard('#B2D9EA')">
+  <div class="hex">#B2D9EA</div>
+</div>
+
+  </div>
+</div>
+
+  <script>
+    function copyToClipboard(text) {
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      const swatch = event.currentTarget;
+      const original = swatch.style.transform;
+      swatch.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        swatch.style.transform = original;
+      }, 200);
+    })
+    .catch(err => console.error('Failed to copy:', err));
+}
+
+  </script>
+</body>
+</html>
