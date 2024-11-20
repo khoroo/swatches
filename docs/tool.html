@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Colour Picker</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui;
+        }
+        h1 {
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .canvas-container {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        .drop-zone {
+            width: 100%;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .drop-zone.drag-over {
+            background: #f0f0f0;
+            border-color: #666;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            cursor: crosshair;
+        }
+        .colour-info {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        .colour-preview {
+            width: 100px;
+            height: 100px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .selected-colours {
+            margin-top: 20px;
+        }
+        .colour-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+        .colour-swatch {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .remove-btn {
+            padding: 4px 8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .export-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+        }
+        .export-code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Colour Picker</h1>
+    <div class="container">
+        <div class="canvas-container">
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="imageInput" accept="image/*">
+                <p>or drag and drop an image here</p>
+            </div>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="colour-info">
+            <div class="colour-preview" id="colourPreview"></div>
+            <div id="colourValue"></div>
+            <div id="position"></div>
+            <div class="selected-colours">
+                <h3>Selected Colours:</h3>
+                <div id="colourList"></div>
+                <div class="export-section">
+                    <h3>Export Colours:</h3>
+                    <div id="exportCode" class="export-code"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const dropZone = document.getElementById('dropZone');
+        const colourPreview = document.getElementById('colourPreview');
+        const colourValue = document.getElementById('colourValue');
+        const position = document.getElementById('position');
+        const colourList = document.getElementById('colourList');
+        const exportCode = document.getElementById('exportCode');
+        
+        let selectedColours = [];
+
+        function rgbToHex(r, g, b) {
+            return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('');
+        }
+
+        function loadImage(file) {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                dropZone.style.display = 'none';
+                canvas.style.display = 'block';
+            }
+        }
+
+        function addColour(hex) {
+            if (!selectedColours.includes(hex)) {
+                selectedColours.push(hex);
+                updateColourList();
+                updateExportCode();
+            }
+        }
+
+        function removeColour(index) {
+            selectedColours.splice(index, 1);
+            updateColourList();
+            updateExportCode();
+        }
+
+        function updateColourList() {
+            colourList.innerHTML = '';
+            selectedColours.forEach((hex, index) => {
+                const colourItem = document.createElement('div');
+                colourItem.className = 'colour-item';
+                
+                const swatch = document.createElement('div');
+                swatch.className = 'colour-swatch';
+                swatch.style.backgroundColor = hex;
+                
+                const colourInfo = document.createElement('span');
+                colourInfo.textContent = hex;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = 'Remove';
+                removeBtn.onclick = () => removeColour(index);
+                
+                colourItem.appendChild(swatch);
+                colourItem.appendChild(colourInfo);
+                colourItem.appendChild(removeBtn);
+                colourList.appendChild(colourItem);
+            });
+        }
+
+        function updateExportCode() {
+            const exportString = JSON.stringify(selectedColours);
+            exportCode.textContent = exportString;
+        }
+
+        exportCode.addEventListener('click', function() {
+            navigator.clipboard.writeText(exportCode.textContent);
+            const originalText = exportCode.textContent;
+            exportCode.textContent = 'Copied!';
+            setTimeout(() => {
+                exportCode.textContent = originalText;
+            }, 1000);
+        });
+
+        document.getElementById('imageInput').addEventListener('change', (e) => {
+            if (e.target.files[0]) loadImage(e.target.files[0]);
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
+            }
+        });
+
+        canvas.addEventListener('mousemove', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+            
+            colourPreview.style.backgroundColor = hex;
+            colourValue.innerHTML = `HEX: ${hex}`;
+            position.textContent = `Position: ${Math.round(x)}, ${Math.round(y)}`;
+        });
+
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+            addColour(hex);
+        });
+    </script>
+</body>
+</html>
