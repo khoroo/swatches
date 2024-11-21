@@ -1,300 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Color Swatches</title>
+  <title>Colour Swatches</title>
   <style>
     body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f5f7fa;
-  padding: 2em;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f7fa;
+      padding: 2em;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-.swatch-group {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5em;
-  margin: 2em 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+    .swatch-group {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5em;
+      margin: 2em 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-.group-name {
-  font-size: 1.5em;
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 1em;
-  border-bottom: 2px solid #edf2f7;
-  padding-bottom: 0.5em;
-}
+    .group-name {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 1em;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 0.5em;
+    }
 
-.swatch-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1em;
-}
+    .swatch-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1em;
+    }
 
-.swatch {
-  position: relative;
-  height: 120px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  align-items: flex-end;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  overflow: hidden;
-}
+    .swatch {
+      position: relative;
+      height: 120px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
 
-.swatch:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
+    .hex {
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 8px;
+      font-family: monospace;
+      width: 100%;
+      text-align: center;
+      font-size: 0.9em;
+      position: absolute;
+      bottom: 0;
+    }
 
-.hex {
-  background: rgba(0,0,0,0.7);
-  color: white;
-  padding: 8px;
-  font-family: monospace;
-  width: 100%;
-  text-align: center;
-  font-size: 0.9em;
-}
+    .copy-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.9);
+      padding: 0.5em 1em;
+      border-radius: 4px;
+      font-weight: 500;
+      display: none;
+    }
 
-.copy-notification {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  background: rgba(255,255,255,0.9);
-  padding: 0.5em 1em;
-  border-radius: 4px;
-  font-weight: 500;
-  opacity: 0;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-.swatch.copied .copy-notification {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-}
-
+    .swatch.copied .copy-message {
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <div class="swatch-group">
-  <div class="group-name">Fuzzy</div>
-  <div class="swatch-container">
-    <div class="swatch" style="background: #AF3424" data-color="#AF3424">
-  <div class="hex">#AF3424</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #b3a83d" data-color="#b3a83d">
-  <div class="hex">#b3a83d</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #b49539" data-color="#b49539">
-  <div class="hex">#b49539</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-  </div>
-</div>
-
-<div class="swatch-group">
-  <div class="group-name">Meadow</div>
-  <div class="swatch-container">
-    <div class="swatch" style="background: #7EC61C" data-color="#7EC61C">
-  <div class="hex">#7EC61C</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #AFDAD7" data-color="#AFDAD7">
-  <div class="hex">#AFDAD7</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #F88E89" data-color="#F88E89">
-  <div class="hex">#F88E89</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #D2DF9A" data-color="#D2DF9A">
-  <div class="hex">#D2DF9A</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #9AACAA" data-color="#9AACAA">
-  <div class="hex">#9AACAA</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #268FAD" data-color="#268FAD">
-  <div class="hex">#268FAD</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #EEE322" data-color="#EEE322">
-  <div class="hex">#EEE322</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #6A8DB6" data-color="#6A8DB6">
-  <div class="hex">#6A8DB6</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #F0EDDA" data-color="#F0EDDA">
-  <div class="hex">#F0EDDA</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #EABBBB" data-color="#EABBBB">
-  <div class="hex">#EABBBB</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-  </div>
-</div>
-
-<div class="swatch-group">
-  <div class="group-name">NEW</div>
-  <div class="swatch-container">
-    <div class="swatch" style="background: #F55770" data-color="#F55770">
-  <div class="hex">#F55770</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #FC8A94" data-color="#FC8A94">
-  <div class="hex">#FC8A94</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #756448" data-color="#756448">
-  <div class="hex">#756448</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #4F4732" data-color="#4F4732">
-  <div class="hex">#4F4732</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #EB9B5E" data-color="#EB9B5E">
-  <div class="hex">#EB9B5E</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #F1D3AD" data-color="#F1D3AD">
-  <div class="hex">#F1D3AD</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #322111" data-color="#322111">
-  <div class="hex">#322111</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-  </div>
-</div>
-
-<div class="swatch-group">
-  <div class="group-name">Ocean</div>
-  <div class="swatch-container">
-    <div class="swatch" style="background: #0F4C81" data-color="#0F4C81">
-  <div class="hex">#0F4C81</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #6FB7D6" data-color="#6FB7D6">
-  <div class="hex">#6FB7D6</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #B2D9EA" data-color="#B2D9EA">
-  <div class="hex">#B2D9EA</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-  </div>
-</div>
-
-<div class="swatch-group">
-  <div class="group-name">PoolSide</div>
-  <div class="swatch-container">
-    <div class="swatch" style="background: #D17175" data-color="#D17175">
-  <div class="hex">#D17175</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #E36630" data-color="#E36630">
-  <div class="hex">#E36630</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #E2987F" data-color="#E2987F">
-  <div class="hex">#E2987F</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #F7DBCD" data-color="#F7DBCD">
-  <div class="hex">#F7DBCD</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #9AA98C" data-color="#9AA98C">
-  <div class="hex">#9AA98C</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #326350" data-color="#326350">
-  <div class="hex">#326350</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #35594D" data-color="#35594D">
-  <div class="hex">#35594D</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #3E400E" data-color="#3E400E">
-  <div class="hex">#3E400E</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #4E3715" data-color="#4E3715">
-  <div class="hex">#4E3715</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-<div class="swatch" style="background: #9EA09F" data-color="#9EA09F">
-  <div class="hex">#9EA09F</div>
-  <div class="copy-notification">Copied!</div>
-</div>
-
-  </div>
-</div>
+  <div id="swatch-groups"></div>
 
   <script>
-    document.querySelectorAll('.swatch').forEach(swatch => {
-  swatch.addEventListener('click', async () => {
-    const color = swatch.dataset.color;
-    
-    try {
-      await navigator.clipboard.writeText(color);
-      swatch.classList.add('copied');
-      
-      setTimeout(() => {
-        swatch.classList.remove('copied');
-      }, 1000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+    async function loadSwatches() {
+      try {
+        const response = await fetch('swatches.json');
+        const data = await response.json();
+        
+        const container = document.getElementById('swatch-groups');
+        
+        data.colourGroups.forEach(group => {
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'swatch-group';
+          
+          const nameDiv = document.createElement('div');
+          nameDiv.className = 'group-name';
+          nameDiv.textContent = group.name;
+          
+          const swatchContainer = document.createElement('div');
+          swatchContainer.className = 'swatch-container';
+          
+          group.colours.forEach(colour => {
+            const swatch = document.createElement('div');
+            swatch.className = 'swatch';
+            swatch.style.background = colour;
+            
+            swatch.innerHTML = `
+              <div class="hex">${colour}</div>
+              <div class="copy-message">Copied!</div>
+            `;
+            
+            swatch.addEventListener('click', async () => {
+              await navigator.clipboard.writeText(colour);
+              swatch.classList.add('copied');
+              setTimeout(() => swatch.classList.remove('copied'), 1000);
+            });
+            
+            swatchContainer.appendChild(swatch);
+          });
+          
+          groupDiv.appendChild(nameDiv);
+          groupDiv.appendChild(swatchContainer);
+          container.appendChild(groupDiv);
+        });
+      } catch (err) {
+        console.error('Failed to load swatches:', err);
+      }
     }
-  });
-});
 
+    loadSwatches();
   </script>
 </body>
 </html>

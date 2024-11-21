@@ -1,0 +1,83 @@
+{
+  "colourGroups": [
+    {
+      "name": "Gumowski-Mira",
+      "colours": [
+        "#AF3424",
+        "#b3a83d",
+        "#b49539"
+      ]
+    },
+    {
+      "name": "Secret Garden",
+      "colours": [
+        "#7EC61C",
+        "#AFDAD7",
+        "#F88E89",
+        "#D2DF9A",
+        "#9AACAA",
+        "#268FAD",
+        "#EEE322",
+        "#6A8DB6",
+        "#F0EDDA",
+        "#EABBBB",
+        "#DEAA4F",
+        "#C64D5F"
+      ]
+    },
+    {
+      "name": "NEW",
+      "colours": [
+        "#F55770",
+        "#FC8A94",
+        "#756448",
+        "#4F4732",
+        "#EB9B5E",
+        "#F1D3AD",
+        "#322111"
+      ]
+    },
+    {
+      "name": "Her Room by Andrew Wyeth",
+      "colours": [
+        "#716043",
+        "#D2BD9F",
+        "#F5E3C5",
+        "#413617",
+        "#7B5C40",
+        "#93713E",
+        "#B08277"
+      ]
+    },
+    {
+      "name": "Manuscript",
+      "colours": [
+        "#800000",
+        "#2A537F",
+        "#B26356",
+        "#75A480",
+        "#B09D69",
+        "#9A837B",
+        "#87AD01",
+        "#B58371",
+        "#4B6E7E",
+        "#DBA8AF"
+      ]
+    },
+    {
+      "name": "PoolSide",
+      "colours": [
+        "#D17175",
+        "#E36630",
+        "#E2987F",
+        "#F7DBCD",
+        "#9AA98C",
+        "#326350",
+        "#35594D",
+        "#3E400E",
+        "#4E3715",
+        "#9EA09F"
+      ]
+    }
+  ]
+}
