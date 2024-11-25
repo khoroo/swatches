@@ -1,6 +1,38 @@
 {
   "colourGroups": [
     {
+      "name": "Modulex",
+      "colours": [
+        "#F1F1F1",
+        "#F6F7F9",
+        "#A6ACA2",
+        "#1C252E",
+        "#9A6B4F",
+        "#957A5D",
+        "#CEB887",
+        "#DAAB27",
+        "#76966D",
+        "#4A88A1",
+        "#C44D37",
+        "#D57A29",
+        "#D8C755",
+        "#72BE37",
+        "#58C4EA",
+        "#DC8598",
+        "#A2ACAE",
+        "#8A8E8D",
+        "#334049",
+        "#583E3F",
+        "#EF9C34",
+        "#F7E253",
+        "#50C2BA",
+        "#82ACDC",
+        "#2453A3",
+        "#C0A1CB",
+        "#F68AA1"
+      ]
+    },
+    {
       "name": "Gumowski-Mira",
       "colours": [
         "#AF3424",
