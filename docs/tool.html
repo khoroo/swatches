@@ -3,89 +3,130 @@
 <head>
     <title>Colour Picker</title>
     <style>
+        :root {
+            --width: 800px;
+            --font-main: Verdana, sans-serif;
+            --font-secondary: Verdana, sans-serif;
+            --font-scale: 1em;
+            --background-color: #fff;
+            --heading-color: #222;
+            --text-color: #444;
+            --link-color: #3273dc;
+            --visited-color: #8b6fcb;
+            --code-background-color: #f2f2f2;
+            --code-color: #222;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #333;
+                --heading-color: #eee;
+                --text-color: #ddd;
+                --link-color: #8cc2dd;
+                --visited-color: #8b6fcb;
+                --code-background-color: #777;
+                --code-color: #ddd;
+            }
+        }
+
         body {
-            margin: 0;
-            font-family: system-ui;
-        }
-        .container {
+            font-family: var(--font-secondary);
+            font-size: var(--font-scale);
+            margin: auto;
             padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: var(--width);
+            text-align: left;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
         }
+
+        .container { margin: 0 auto; }
+
         .drop-zone {
-            border: 2px dashed #ccc;
+            border: 2px dashed var(--text-color);
             border-radius: 8px;
             padding: 20px;
             text-align: center;
             margin-bottom: 20px;
+            background-color: var(--background-color);
         }
+
         .drop-zone.drag-over {
-            background: #f0f0f0;
-            border-color: #666;
+            background: var(--code-background-color);
+            border-color: var(--heading-color);
         }
+
         canvas {
             width: 100%;
             height: auto;
-            display: block;
+            display: none;
             cursor: crosshair;
             margin-bottom: 20px;
+            background: var(--background-color);
         }
+
         .preview-section {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             padding: 15px;
-            background: #f5f5f5;
+            background: var(--code-background-color);
             border-radius: 8px;
         }
+
         .preview-color {
             width: 60px;
             height: 60px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
         }
+
         .preview-info {
-            font-size: 14px;
-            color: #333;
+            font-family: monospace;
+            color: var(--code-color);
         }
+
         .colours-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
+
         .colour-item {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .colour-block {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            border: 1px solid #eee;
-            margin-bottom: 8px;
-            transition: transform 0.2s;
+            width: 60px;
+            height: 60px;
             cursor: pointer;
+            margin-bottom: 8px;
         }
-        .colour-block:hover {
-            transform: scale(1.05);
-        }
+
         .colour-hex {
-            font-size: 14px;
-            color: #666;
-            text-align: center;
+            font-family: monospace;
+            color: var(--code-color);
+            font-size: 0.9em;
         }
+
         .export-panel {
-            background: #f5f5f5;
+            background: var(--code-background-color);
             padding: 15px;
             border-radius: 8px;
             font-family: monospace;
-            font-size: 14px;
+            color: var(--code-color);
             cursor: pointer;
             white-space: pre-wrap;
             word-break: break-all;
+        }
+
+        .paste-hint {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--text-color);
         }
     </style>
 </head>
@@ -94,6 +135,7 @@
         <div class="drop-zone" id="dropZone">
             <input type="file" id="imageInput" accept="image/*">
             <p>Drop image here or click to upload</p>
+            <p class="paste-hint">You can also paste an image (Ctrl+V)</p>
         </div>
         <canvas id="canvas"></canvas>
         <div class="preview-section">
@@ -163,6 +205,17 @@
             updateUI();
         }
 
+        function handlePaste(e) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let item of items) {
+                if (item.type.indexOf('image') === 0) {
+                    const file = item.getAsFile();
+                    loadImage(file);
+                    break;
+                }
+            }
+        }
+
         els.exportCode.onclick = function() {
             navigator.clipboard.writeText(this.textContent);
             const originalText = this.textContent;
@@ -209,6 +262,9 @@
             const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
             addColour(rgbToHex(r, g, b));
         };
+
+        // Add paste event listener
+        document.addEventListener('paste', handlePaste);
     </script>
 </body>
 </html>
