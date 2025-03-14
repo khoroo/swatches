@@ -1,4 +1,3 @@
-
 const app = document.getElementById('app');
 
 interface ColourGroup {
@@ -18,15 +17,16 @@ async function loadSwatches() {
     if (app) {
       const swatchGroupsHTML = data.colourGroups.map(group => {
         const swatchesHTML = group.colours.map(colour => `
-          <div class="relative h-15 w-15 rounded-md cursor-pointer outline-2 outline-transparent outline-offset-2 hover:outline-heading-color transition-colors duration-150 swatch" style="background:${colour};">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-mono text-center text-gray-800 dark:text-gray-200 hex">${colour}</div>
+          <div class="flex flex-col items-center cursor-pointer swatch">
+            <div class="h-14 w-14 rounded-md shadow-sm hover:shadow-md outline-2 outline-transparent outline-offset-2 hover:outline-blue-500 transition-all duration-200" style="background:${colour};"></div>
+            <div class="mt-1 text-xs font-mono text-center text-gray-800 dark:text-gray-200 hex">${colour}</div>
           </div>
         `).join('');
 
         return `
-          <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-5 swatch-group">
-            <div class="text-xl dark:text-gray-100 mb-2 pb-1 border-b-2 border-gray-400 group-name">${group.name}</div>
-            <div class="grid grid-cols-4 gap-4 swatch-container">${swatchesHTML}</div>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-5 swatch-group">
+            <div class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 group-name">${group.name}</div>
+            <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1 swatch-container">${swatchesHTML}</div>
           </div>
         `;
       }).join('');
@@ -39,17 +39,28 @@ async function loadSwatches() {
         swatch.addEventListener('click', async () => {
           const colour = swatch.querySelector('.hex')?.textContent || '';
           await navigator.clipboard.writeText(colour);
-          swatch.classList.add('copied');
-          swatch.addEventListener('animationend', () => {
-            swatch.classList.remove('copied');
-          }, { once: true });
+          
+          // Add copied feedback
+          swatch.classList.add('scale-105');
+          setTimeout(() => swatch.classList.remove('scale-105'), 200);
+          
+          // Show toast notification
+          const toast = document.createElement('div');
+          toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded shadow-lg z-50 animate-fade-in-out';
+          toast.textContent = `${colour} copied to clipboard!`;
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
         });
       });
     }
   } catch (err) {
     console.error('Failed to load swatches:', err);
     if (app) {
-      app.textContent = 'Failed to load swatches.';
+      app.innerHTML = `
+        <div class="p-6 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-lg">
+          Failed to load swatches. Please check your network connection.
+        </div>
+      `;
     }
   }
 }
